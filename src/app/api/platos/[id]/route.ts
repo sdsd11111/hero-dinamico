@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -26,17 +26,19 @@ const platoUpdateSchema = z.object({
 
 export const dynamic = 'force-dynamic';
 
+
 export async function GET(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   try {
     // Using the existing supabase client with service role
     
     const { data: plato, error } = await supabase
       .from('platos')
       .select('*')
-      .eq('id', context.params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -58,14 +60,13 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   console.log('Solicitud PUT recibida');
   console.log('URL de la solicitud:', request.url);
   
-  // Usar el ID del contexto
-  const id = context.params.id;
   console.log('ID del plato a actualizar:', id);
   
   if (!id || id === '[id]') {
@@ -136,7 +137,7 @@ export async function PUT(
         JSON.stringify({ 
           error: 'ID del plato no proporcionado o inválido',
           receivedId: id || 'undefined',
-          params: context.params
+          params: { id }
         }), 
         { status: 400 }
       );
@@ -267,7 +268,7 @@ export async function PUT(
         return new Response(
           JSON.stringify({ 
             error: 'No se encontró el plato para actualizar',
-            id: context.params.id
+            id: id
           }), 
           { status: 404 }
         );
@@ -298,13 +299,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   console.log('Solicitud DELETE recibida');
-  
-  // Usar el ID del contexto
-  const id = context.params.id;
   
   console.log('URL de la solicitud:', request.url);
   console.log('ID del plato a eliminar:', id);
