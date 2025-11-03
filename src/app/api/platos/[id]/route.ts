@@ -28,7 +28,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     // Using the existing supabase client with service role
@@ -36,7 +36,7 @@ export async function GET(
     const { data: plato, error } = await supabase
       .from('platos')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', context.params.id)
       .single();
 
     if (error) {
@@ -59,17 +59,14 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   console.log('Solicitud PUT recibida');
   console.log('URL de la solicitud:', request.url);
   
-  // Extraer el ID de la URL
-  const url = new URL(request.url);
-  const pathSegments = url.pathname.split('/');
-  const id = pathSegments[pathSegments.length - 1];
-  
-  console.log('ID extraído de la URL:', id);
+  // Usar el ID del contexto
+  const id = context.params.id;
+  console.log('ID del plato a actualizar:', id);
   
   if (!id || id === '[id]') {
     console.error('ID no proporcionado o inválido en la URL');
@@ -139,7 +136,7 @@ export async function PUT(
         JSON.stringify({ 
           error: 'ID del plato no proporcionado o inválido',
           receivedId: id || 'undefined',
-          params: params
+          params: context.params
         }), 
         { status: 400 }
       );
@@ -270,7 +267,7 @@ export async function PUT(
         return new Response(
           JSON.stringify({ 
             error: 'No se encontró el plato para actualizar',
-            id: params.id
+            id: context.params.id
           }), 
           { status: 404 }
         );
@@ -302,19 +299,17 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   console.log('Solicitud DELETE recibida');
   
-  // Extraer el ID de la URL
-  const url = new URL(request.url);
-  const pathSegments = url.pathname.split('/');
-  const id = pathSegments[pathSegments.length - 1];
+  // Usar el ID del contexto
+  const id = context.params.id;
   
   console.log('URL de la solicitud:', request.url);
-  console.log('ID extraído de la URL:', id);
+  console.log('ID del plato a eliminar:', id);
   
-  if (!id || id === '[id]') {
+  if (!id) {
     console.error('ID no proporcionado o inválido en la URL');
     return new Response(
       JSON.stringify({ 
