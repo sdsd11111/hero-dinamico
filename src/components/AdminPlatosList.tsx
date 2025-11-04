@@ -57,7 +57,6 @@ export default function AdminPlatosList({
             <TableHead>Nombre</TableHead>
             <TableHead>Descripción</TableHead>
             <TableHead className="text-right">Precio</TableHead>
-            <TableHead>Estado</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -82,19 +81,21 @@ export default function AdminPlatosList({
                 ${plato.precio.toFixed(2)}
               </TableCell>
               <TableCell>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id={`status-${plato.id}`}
-                    checked={plato.activo}
-                    onCheckedChange={() => onToggleStatus(plato.id, plato.activo)}
-                  />
-                  <span className="text-sm">
-                    {plato.activo ? 'Activo' : 'Inactivo'}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end space-x-2 items-center">
+                  <div className="flex items-center space-x-2 mr-4">
+                    <span className="text-sm text-muted-foreground">
+                      {plato.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onToggleStatus(plato.id, plato.activo)}
+                      title={plato.activo ? 'Desactivar' : 'Activar'}
+                      className={plato.activo ? 'hover:bg-yellow-50' : 'hover:bg-green-50'}
+                    >
+                      {plato.activo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
                   <Button
                     variant="outline"
                     size="icon"

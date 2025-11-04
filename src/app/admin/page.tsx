@@ -58,8 +58,23 @@ export default function AdminPage() {
 
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
     try {
+      // Primero obtenemos los datos actuales del plato
+      const platoActual = platos.find(p => p.id === id);
+      if (!platoActual) {
+        throw new Error('Plato no encontrado');
+      }
+
       const formData = new FormData();
+      // Incluimos todos los campos requeridos
+      formData.append('titulo', platoActual.titulo);
+      formData.append('descripcion', platoActual.descripcion);
+      formData.append('precio', platoActual.precio.toString());
       formData.append('activo', (!currentStatus).toString());
+      
+      // Si hay una URL de imagen, la incluimos
+      if (platoActual.imagen_url) {
+        formData.append('imagen_url', platoActual.imagen_url);
+      }
       
       const response = await fetch(`/api/platos/${id}`, {
         method: 'PUT',

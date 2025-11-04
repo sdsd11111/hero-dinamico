@@ -55,7 +55,16 @@ export const Footer = ({ logo, description, socialLinks, footerLinks }: FooterPr
 
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
-          &copy; {currentYear} Todos los derechos reservados.
+          Diseñado por{' '}
+          <a 
+            href="https://cesarreyesjaramillo.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Cesar Reyes
+          </a>{' '}
+          | Los Almuerzos {currentYear}
         </div>
       </div>
     </footer>
