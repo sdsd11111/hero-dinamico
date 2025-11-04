@@ -18,8 +18,6 @@ export const metadata: Metadata = {
   description: "Un sitio web moderno con un hero dinámico, header y footer personalizables.",
   keywords: ["Next.js", "React", "Tailwind CSS", "Hero", "Landing Page"],
   authors: [{ name: "Tu Nombre" }],
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: "#ffffff",
 };
 
 export default function RootLayout({

@@ -26,12 +26,12 @@ const platoUpdateSchema = z.object({
 
 export const dynamic = 'force-dynamic';
 
-
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } } | { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
+  const params = await (typeof context.params === 'object' && 'then' in context.params ? context.params : Promise.resolve(context.params));
+  const id = params.id;
   try {
     // Using the existing supabase client with service role
     
@@ -61,11 +61,20 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } } | { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
   console.log('Solicitud PUT recibida');
-  console.log('URL de la solicitud:', request.url);
+  
+  // Manejar tanto el caso de Vercel como el local
+  const params = await (typeof context.params === 'object' && 'then' in context.params ? context.params : Promise.resolve(context.params));
+  let id = params.id;
+  
+  // Si no se obtuvo el ID de params, intentar de la URL
+  if (!id || id === '[id]') {
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    id = pathSegments[pathSegments.length - 1];
+  }
   
   console.log('ID del plato a actualizar:', id);
   
@@ -136,8 +145,7 @@ export async function PUT(
       return new Response(
         JSON.stringify({ 
           error: 'ID del plato no proporcionado o inválido',
-          receivedId: id || 'undefined',
-          params: { id }
+          receivedId: id || 'undefined'
         }), 
         { status: 400 }
       );
@@ -239,10 +247,28 @@ export async function PUT(
         hasImageUrl: !!imagenUrl
       });
 
+      const { data: existingPlato, error: fetchError } = await supabase
+        .from('platos')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) {
+        console.error('Error fetching plato:', fetchError);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Plato no encontrado',
+            details: fetchError,
+            id
+          }), 
+          { status: 404 }
+        );
+      }
+
       const { data: updatedPlato, error: updateError } = await supabase
         .from('platos')
         .update(updateData)
-        .eq('id', platoId)
+        .eq('id', id)
         .select()
         .single();
 
@@ -300,19 +326,27 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } } | { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
   console.log('Solicitud DELETE recibida');
   
-  console.log('URL de la solicitud:', request.url);
+  // Manejar tanto el caso de Vercel como el local
+  const params = await (typeof context.params === 'object' && 'then' in context.params ? context.params : Promise.resolve(context.params));
+  let id = params.id;
+  
+  // Si no se obtuvo el ID de params, intentar de la URL
+  if (!id || id === '[id]') {
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    id = pathSegments[pathSegments.length - 1];
+  }
+  
   console.log('ID del plato a eliminar:', id);
   
-  if (!id) {
+  if (!id || id === '[id]') {
     console.error('ID no proporcionado o inválido en la URL');
     return new Response(
       JSON.stringify({ 
-        success: false,
         error: 'ID del plato no proporcionado o inválido',
         receivedId: id || 'undefined',
         url: request.url
@@ -320,9 +354,7 @@ export async function DELETE(
       { status: 400 }
     );
   }
-  
-  console.log('ID del plato a eliminar:', id);
-  
+
   try {
 
     try {
@@ -330,7 +362,7 @@ export async function DELETE(
       console.log('Buscando plato con ID:', id);
       const { data: plato, error: fetchError } = await supabase
         .from('platos')
-        .select('id, imagen_url')
+        .select('*')
         .eq('id', id)
         .single();
 
@@ -377,9 +409,9 @@ export async function DELETE(
       // 3. Eliminar el plato de la base de datos
       console.log('Eliminando plato de la base de datos...');
       const { error: deleteError } = await supabase
-        .from('platos')
-        .delete()
-        .eq('id', id);
+      .from('platos')
+      .delete()
+      .eq('id', id);
 
       if (deleteError) {
         console.error('Error de Supabase al eliminar:', deleteError);
