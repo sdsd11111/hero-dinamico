@@ -5,6 +5,126 @@
   --foreground: #171717;
 }
 
+/* Hide all Google Translate elements */
+.goog-te-banner-frame,
+.skiptranslate,
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-menu,
+.goog-te-menu-frame,
+.goog-te-menu2,
+.goog-te-ftab,
+.goog-te-balloon,
+.goog-te-spinner,
+.goog-te-spinner-pos,
+.goog-te-spinner-animation,
+.goog-te-ftab-frame,
+.goog-te-balloon-frame,
+.goog-te-balloon-frame-cc,
+.goog-te-balloon-frame-tl,
+.goog-te-balloon-frame-tr,
+.goog-te-balloon-frame-bl,
+.goog-te-balloon-frame-br,
+.goog-te-balloon-frame-tc,
+.goog-te-balloon-frame-bc,
+.goog-te-balloon-frame-cl,
+.goog-te-balloon-frame-cr,
+.goog-te-gadget .goog-te-combo,
+.goog-te-gadget-simple .goog-te-menu-value,
+.goog-te-gadget-simple .goog-te-menu-value span,
+.goog-te-gadget-simple .goog-te-menu-value img,
+.goog-te-menu,
+.goog-te-menu *,
+.goog-te-menu-float,
+.goog-te-menu-float *,
+.goog-te-menu2,
+.goog-te-menu2 * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+  pointer-events: none !important;
+}
+
+/* Ensure the translate element is hidden but functional */
+#google_translate_element {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0.01 !important;
+  pointer-events: none !important;
+}
+
+/* Fix for any potential layout shifts */
+body {
+  top: 0 !important;
+}
+
+/* Prevent iframe from causing layout issues */
+iframe.goog-te-banner-frame,
+iframe.goog-te-menu-frame,
+iframe.goog-te-ftab-frame,
+iframe.goog-te-balloon-frame {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Language Switcher Styles */
+.language-switcher {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.language-button {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+}
+
+.language-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Hide Google Translate elements */
+.goog-te-banner-frame,
+.goog-te-gadget-simple,
+.goog-te-menu-value span,
+.goog-te-gadget,
+#google_translate_element {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

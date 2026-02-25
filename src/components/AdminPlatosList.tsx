@@ -78,7 +78,7 @@ export default function AdminPlatosList({
                 {plato.descripcion}
               </TableCell>
               <TableCell className="text-right">
-                ${plato.precio.toFixed(2)}
+                ${Number(plato.precio).toFixed(2)}
               </TableCell>
               <TableCell>
                 <div className="flex justify-end space-x-2 items-center">

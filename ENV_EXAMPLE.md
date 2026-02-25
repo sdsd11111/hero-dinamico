@@ -1,24 +1,21 @@
-# Variables de Entorno Necesarias para el Despliegue
+# Variables de Entorno Necesarias
 
-## Configuración de Supabase
+## Configuración de MySQL
 ```
-NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
-SUPABASE_SERVICE_ROLE_KEY=tu_clave_de_servicio_supabase
+DB_HOST=mysql.gb.stackcp.com
+DB_PORT=39358
+DB_NAME=restaurante-313031beb3
+DB_USER=restaurante-313031beb3
+DB_PASSWORD=tu_password
 ```
 
 ## Configuración de Next.js
 ```
-NODE_ENV=production
+NODE_ENV=development
 ```
 
-## Configuración de la Aplicación
-```
-NEXT_PUBLIC_SITE_URL=https://tu-dominio.vercel.app
-```
+### Instrucciones:
+1. Asegúrate de tener acceso a la base de datos MySQL proporcionada.
+2. Las imágenes se guardan localmente en la carpeta `public/uploads/platos/`.
+3. Asegúrate de que el servidor tenga permisos de escritura en esa carpeta.
 
-### Instrucciones para Vercel:
-1. Ve a la configuración de tu proyecto en Vercel
-2. Navega a "Environment Variables"
-3. Agrega cada una de las variables mencionadas arriba con sus valores correspondientes
-4. Asegúrate de que todas las variables estén marcadas como "Production"
-5. Realiza un nuevo despliegue para que los cambios surtan efecto
