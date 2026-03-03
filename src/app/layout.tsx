@@ -4,6 +4,7 @@ import "./globals.css";
 import { FontAwesomeProvider } from "./providers";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import I18nProvider from "./i18n-provider";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,14 +48,16 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 flex flex-col min-h-screen`}>
-        <I18nProvider>
-          <FontAwesomeProvider>
-            <div className="flex flex-col flex-1">
-              {children}
-              <LanguageSwitcher />
-            </div>
-          </FontAwesomeProvider>
-        </I18nProvider>
+        <ErrorBoundary>
+          <I18nProvider>
+            <FontAwesomeProvider>
+              <div className="flex flex-col flex-1">
+                {children}
+                <LanguageSwitcher />
+              </div>
+            </FontAwesomeProvider>
+          </I18nProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
