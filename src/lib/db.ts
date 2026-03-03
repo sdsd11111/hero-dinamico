@@ -8,12 +8,21 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 5, // Reducido para entornos Serverless para prevenir agotamiento
   queueLimit: 0,
 };
 
-// Crear pool de conexiones
-export const pool = mysql.createPool(dbConfig);
+// Singleton para mantener la conexión en entornos Serverless/Next.js
+const globalForDb = globalThis as unknown as {
+  pool: mysql.Pool | undefined;
+};
+
+// Crear o reutilizar el pool de conexiones
+export const pool = globalForDb.pool ?? mysql.createPool(dbConfig);
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForDb.pool = pool;
+}
 
 // Función auxiliar para ejecutar consultas
 export async function query<T>(sql: string, params?: any[]): Promise<T> {
